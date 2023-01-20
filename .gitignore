@@ -6,7 +6,7 @@ vevn
 venv
 # C extensions
 *.so
-
+*.offset
 # Distribution / packaging
 .Python
 build/
