@@ -9,14 +9,14 @@ pip install git+https://github.com/surajsinghbisht054/mac-master-logger
 ## Sample Config
 
 ```
-from maclogger.maclogger import Maclogger
+[machine_details]
+uuid = YOUR_UUID
+host = HOST_ID
 
-mac = Maclogger("__YOUR__UUID", '__ENDPOINT__')
-
-logger = mac.create_logger("__LOGGER_NAME__")
-
-logger.error("..")
-logger.info("..")
-logger.debug("..")
+[log_file_paths]
+file1 = file_path
+file2 = file_path
+..
+..
 
 ```
