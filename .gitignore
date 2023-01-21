@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 vevn
 venv
+*.ini
 # C extensions
 *.so
 *.offset
