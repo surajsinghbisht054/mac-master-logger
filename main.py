@@ -3,13 +3,14 @@ import asyncio
 from pygtail import Pygtail
 import configparser
 import argparse
-
+import os
 # ---------------------------------------------------------
 # ----------------- CONFIG FILE READ ----------------------
 # ---------------------------------------------------------
 
+path_to_config = os.getcwd() + '/config.ini'
 config_obj = configparser.ConfigParser()
-config_obj.read("config.ini")
+config_obj.read(path_to_config)
 
 machine_details = config_obj["machine_details"]
 
