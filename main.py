@@ -8,7 +8,7 @@ import os
 # ----------------- CONFIG FILE READ ----------------------
 # ---------------------------------------------------------
 
-path_to_config = os.getcwd() + '/config.ini'
+path_to_config = os.path.join(os.getcwd(), 'config.ini')
 config_obj = configparser.ConfigParser()
 config_obj.read(path_to_config)
 
