@@ -2,6 +2,11 @@ import requests_async as requests
 import asyncio
 from pygtail import Pygtail
 import configparser
+import argparse
+
+# ---------------------------------------------------------
+# ----------------- CONFIG FILE READ ----------------------
+# ---------------------------------------------------------
 
 config_obj = configparser.ConfigParser()
 config_obj.read("config.ini")
@@ -16,7 +21,7 @@ log_paths = list()
 path_items = config_obj.items("log_file_paths")
 for key, path in path_items:
     log_paths.append(path)
-
+    
 
 
 def send_request(log_data):
@@ -31,8 +36,31 @@ def send_request(log_data):
 def run_read_log():
     log_list  = list()
     for i in log_paths:
-        for log in Pygtail(i):
+        tail = Pygtail(i, read_from_end=True)
+        for log in tail:
             log_list.append(log)
+    
+    if log_list:
+        send_request(log_list)
+    else:
+        print("List is Empty!")
+    
+def run_initial_read_log():
 
-    send_request(log_list)
+    for i in log_paths:
+        tail = Pygtail(i, read_from_end=True)
+        for log in tail:
+            print(log)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    
+    parser.add_argument("-test", "--testing", action="store_true")
+    args = parser.parse_args()
+
+    if args.testing:
+        run_initial_read_log()
+    else:
+        run_read_log()
+        
 
