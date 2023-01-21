@@ -8,9 +8,10 @@ import os
 # ----------------- CONFIG FILE READ ----------------------
 # ---------------------------------------------------------
 
-path_to_config = os.path.join(os.getcwd(), 'config.ini')
+base_path = os.path.dirname(os.path.realpath(__file__))
+
 config_obj = configparser.ConfigParser()
-config_obj.read(path_to_config)
+config_obj.read(os.path.join(base_path, 'config.ini'))
 
 machine_details = config_obj["machine_details"]
 
