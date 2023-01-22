@@ -20,3 +20,9 @@ file2 = file_path
 ..
 
 ```
+
+## Crontab 
+```
+*/5 * * * * python3 /home/ubuntu/mac-master-logger/main.py >> /home/ubuntu/cron>
+
+```

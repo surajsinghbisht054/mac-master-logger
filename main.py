@@ -1,5 +1,4 @@
-import requests_async as requests
-import asyncio
+import requests
 from pygtail import Pygtail
 import configparser
 import argparse
@@ -31,8 +30,8 @@ def send_request(log_data):
         "format" : "simple",
         "log_list" : log_data
     }
-    req = requests.post(host, json=data, headers={"Content-type": "application/json", "uuid": uuid})
-    asyncio.run(req)
+    
+    requests.post(host, json=data, headers={"Content-type": "application/json", "uuid": uuid})
 
 
 def run_read_log():
@@ -64,5 +63,3 @@ if __name__ == "__main__":
         run_initial_read_log()
     else:
         run_read_log()
-        
-
