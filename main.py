@@ -63,9 +63,10 @@ def run_read_log():
                 if result:
                     timestamp = result.group(1) + DEFAULT_YEAR
                     timestamp = getting_date_python(timestamp)
+                    timestamp+= dt.timedelta(hours=5,minutes=30)
                     log_data = {
                         'log_type': i[0],
-                        'timestamp': timestamp.strftime("%Y-%m-%d %H:%M:%S.%f"),
+                        'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S.%f'),
                         'service': result.group(2),
                         'message': result.group(3)
                     } 
@@ -80,7 +81,7 @@ def run_read_log():
                         'message': log
                     }
             log_list.append(log_data)
-                
+   
     if log_list:
         send_request(log_list)
     else:
