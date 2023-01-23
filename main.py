@@ -83,6 +83,7 @@ def run_read_log():
             log_list.append(log_data)
    
     if log_list:
+        print("Sending Log List")
         send_request(log_list)
     else:
         print("List is Empty!")
