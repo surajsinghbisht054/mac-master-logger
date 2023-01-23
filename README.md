@@ -23,6 +23,7 @@ file2 = file_path
 
 ## Crontab 
 ```
-*/5 * * * * python3 /home/ubuntu/mac-master-logger/main.py >> /home/ubuntu/cron>
+*/5 * * * * python3 /home/ubuntu/mac-master-logger/main.py >> /home/ubuntu/cronsendlogs.log 2>&1
+
 
 ```
