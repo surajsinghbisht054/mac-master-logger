@@ -9,6 +9,7 @@ venv
 *.so
 *.offset
 # Distribution / packaging
+test_logs
 .Python
 build/
 develop-eggs/

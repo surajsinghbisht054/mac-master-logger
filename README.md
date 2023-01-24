@@ -18,12 +18,12 @@ file1 = file_path
 file2 = file_path
 ..
 ..
-
 ```
 
 ## Crontab 
 ```
-*/5 * * * * python3 /home/ubuntu/mac-master-logger/main.py >> /home/ubuntu/cronsendlogs.log 2>&1
-
-
+*/5 * * * * PATH_TO_YOUR_PYTHON PATH_TO_MAINFILE >> LOGFILE_PATH 2>&1
 ```
+
+
+

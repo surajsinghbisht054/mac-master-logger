@@ -29,8 +29,11 @@ for key, path in path_items:
     log_paths.append([key, path])
 
 patterns = {
-    "syslog": r"((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\ \d+\ \d+\:\d+:\d+) ip-\d+-\d+-\d+-\d+\ ([a-zA-Z]+)(.+)",
-    "timestamp" : r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}'
+    "syslog": r"""((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\ \d+\ \d+\:\d+:\d+) ip-\d+-\d+-\d+-\d+\ ([a-zA-Z]+)(.+)].(".+" )""",
+    "timestamp" : r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}',
+    "access_log": r"""(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3})(.+) "(.+" \d\d\d )""",
+    "gunicorn_error": r"""((?:\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})) \+\d\d\d\d] .+\d] (.+)""",
+    "ts_log": r"""(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3}) (.+)""" 
 }
 
 def getting_date_python(date_string):
@@ -53,7 +56,7 @@ def send_request(log_data):
 def run_read_log():
     log_list  = list()
     for i in log_paths:
-        tail = Pygtail(i[1], read_from_end=True)
+        tail = Pygtail(i[1], read_from_end=True) # Change to True in Production
         for log in tail:
             # Check log type
             log_type = i[0].lower()
@@ -68,8 +71,45 @@ def run_read_log():
                         'log_type': i[0],
                         'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S.%f'),
                         'service': result.group(2),
-                        'message': result.group(3)
-                    } 
+                        'message': result.group(4),
+                        'json_log': log
+                    }
+            elif log_type == "access_log":
+                result = re.search(patterns[log_type], log)
+                if result: 
+                    timestamp = getting_date_python(result.group(1))
+                    # timestamp+= dt.timedelta(hours=5,minutes=30) to Convert 
+                    log_data = {
+                        'log_type': i[0],
+                        'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                        'service': i[0],
+                        'message': result.group(3),
+                        'json_log': log
+                    }
+            elif log_type == "gunicorn_error":
+                result = re.search(patterns[log_type], log)
+                if result: 
+                    timestamp = getting_date_python(result.group(1))
+                    # timestamp+= dt.timedelta(hours=5,minutes=30) to Convert 
+                    log_data = {
+                        'log_type': i[0],
+                        'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                        'service': i[0],
+                        'message': result.group(2),
+                        'json_log': log
+                    }
+            elif log_type == "ts_log":
+                result = re.search(patterns[log_type], log)
+                if result: 
+                    timestamp = getting_date_python(result.group(1))
+                    timestamp+= dt.timedelta(hours=5,minutes=30) # to Convert 
+                    log_data = {
+                        'log_type': i[0],
+                        'timestamp': timestamp.strftime('%Y-%m-%d %H:%M:%S.%f'),
+                        'service': i[0],
+                        'message': result.group(2),
+                        'json_log': log
+                    }
             else:
                 result = re.findall(patterns['timestamp'], log)
                 if result:
@@ -78,10 +118,22 @@ def run_read_log():
                         'log_type': i[0],
                         'timestamp': timestamp.strftime("%Y-%m-%d %H:%M:%S.%f"),
                         'service': i[0],
-                        'message': log
+                        'message': "Please See Log Data!",
+                        "json_log": log
+                    }
+                else:
+                    timestamp = dt.datetime.now()
+                    log_data = {
+                        'log_type': i[0],
+                        'timestamp': timestamp.strftime("%Y-%m-%d %H:%M:%S.%f"),
+                        'service': i[0],
+                        'message': "Please See Log Data!",
+                        "json_log": log
                     }
             if log_data:
                 log_list.append(log_data)
+                # print(log_data)
+            
                 
     if log_list:
         print("Sending Log List")
